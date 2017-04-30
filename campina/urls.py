@@ -17,10 +17,11 @@ from django.conf.urls import url
 from django.conf.urls import include
 from rest_framework import routers, serializers, viewsets
 from django.contrib import admin
+from city.serializers import CityViewSet
 
 
 router = routers.DefaultRouter()
-
+# router.register('cities',  CityViewSet)
 
 urlpatterns = [
 	url(r'^', include(router.urls)),
