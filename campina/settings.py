@@ -25,7 +25,7 @@ SECRET_KEY = 'dnsq!6$x#$#3(ll_-lw+xgogq9bb99tw08%qz9v)#967n4xq7%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
