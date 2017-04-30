@@ -4,6 +4,7 @@ from models import City
 from models import CityGdpInYear
 from models import AverageVegetationIndexPerYear
 import unicodedata
+import string
 
 
 def get_city_bbox(city, state):
@@ -55,15 +56,24 @@ def get_municipios():
 		print "%s - %s" % (parsed_response[i]['nome'], parsed_response[i]['estado_ibge']['sigla'])
 
 
+def remove_accents(data):
+    return ''.join(x for x in unicodedata.normalize('NFKD', data) if x in string.ascii_letters)
+
+
 def get_city_pib_year(city_name, state_abbreviation, year, source):
 	# source = open("../pib.csv", 'r')
-	for line in source.readlines():
+	result = 0
+	for line in source:
 		city_info = line.rstrip().split(",")
 		expected_city = unicodedata.normalize('NFKD', "%s (%s)" % (city_name, state_abbreviation.upper())).encode('ascii','ignore')
-		if city_info[0] == expected_city:
-			return city_info[year-2010]
+		city = city_info[0]
+		# print "expected city is %s and city info is %s and result is %s" % (str(expected_city), str(city_info[0]), city_info[0]==expected_city)
+		if city == expected_city:
+			result = city_info[year-2010]
+			print result
+			break
+	return result
 
-	return 0
 
 
 def migration_script(city_info, gdp_info):
@@ -127,6 +137,28 @@ def migrate_auxiliary_data(city_info, gdp_info):
 						city=city,
 						value=get_city_pib_year(cities[i]['nome'], cities[i]['estado_ibge']['nome'], year, gdp_info),
 						year=year)
+				except Exception as e:
+					print e
+					print "Failed to get GDP of %s - %s in %d with GDP %d" % (cities[i]['nome'], cities[i]['estado_ibge']['nome'], year, get_city_pib_year(cities[i]['nome'], cities[i]['estado_ibge']['nome'], year, gdp_info))
+
+
+def migrate_gdp(city_info, gdp_info):
+	cities = json.loads(city_info)
+	for i in range(len(cities)):
+		state=cities[i]['estado_ibge']['nome']
+		if state == "Pernambuco":
+			print "Import %s" % cities[i]['nome']
+			city = City.objects.get(
+				code=cities[i]['id'])
+			years = [2014, 2015, 2016]
+			for year in years:
+				try:
+
+					gdp = CityGdpInYear.objects.create(
+						city=city,
+						value=get_city_pib_year(cities[i]['nome'], cities[i]['estado_ibge']['sigla'], year, gdp_info),
+						year=year)
+					print get_city_pib_year(cities[i]['nome'], cities[i]['estado_ibge']['sigla'], year, gdp_info)
 				except Exception as e:
 					print e
 					print "Failed to get GDP of %s - %s in %d with GDP %d" % (cities[i]['nome'], cities[i]['estado_ibge']['nome'], year, get_city_pib_year(cities[i]['nome'], cities[i]['estado_ibge']['nome'], year, gdp_info))

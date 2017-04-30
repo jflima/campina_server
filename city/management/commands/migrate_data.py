@@ -21,7 +21,7 @@ def migrate_data():
 		print "Failed to open source from city info."
 		return
 	try:
-		gdp_info = open("/home/jamerson/projetos/hackathonnasa/campina/static/pib.csv", 'r')
+		gdp_info = open("/home/jamerson/projetos/hackathonnasa/campina/static/pib.csv", 'r').readlines()
 	except:
 		print "Failed to open source from GDP info."
 		return

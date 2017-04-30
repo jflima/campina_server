@@ -21,7 +21,6 @@ from city.serializers import CityViewSet
 
 
 router = routers.DefaultRouter()
-# router.register('cities',  CityViewSet)
 
 urlpatterns = [
 	url(r'^', include(router.urls)),
