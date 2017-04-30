@@ -1,0 +1,13 @@
+appdirs==1.4.3
+backports.shutil-get-terminal-size==1.0.0
+decorator==4.0.11
+Django==1.11
+django-filter==1.0.2
+djangorestframework==3.6.2
+Markdown==2.6.8
+packaging==16.8
+prompt-toolkit==1.0.14
+pyparsing==2.2.0
+pytz==2017.2
+six==1.10.0
+wcwidth==0.1.7
